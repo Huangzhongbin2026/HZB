@@ -1,0 +1,5 @@
+{
+  "ignorePatterns": ["/public/*", "**/dist/*"],
+  "semi": false,
+  "singleQuote": true
+}

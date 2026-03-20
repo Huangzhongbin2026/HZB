@@ -1,0 +1,8 @@
+{
+  "ignorePatterns": ["public/**", "**/dist/*"],
+  "rules": {
+    "no-unused-vars": "error",
+    "no-unused-expressions": "off"
+  },
+  "plugins": ["eslint", "vue", "typescript", "oxc", "unicorn", "import", "promise"]
+}

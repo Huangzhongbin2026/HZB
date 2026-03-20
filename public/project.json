@@ -1,0 +1,19 @@
+{
+  "scope": "",
+  "apps": {},
+  "imports": {
+    "@one/core": "/apps/@one/core/index.min.js",
+    "@one/table": "/apps/@one/table/index.min.js",
+    "@one/ui": "/apps/@one/ui/index.min.js",
+    "axios": "axios",
+    "echarts": "/apps/@one/ui/echarts.min.js",
+    "echarts/lib/echarts": "/apps/@one/ui/echarts.min.js",
+    "element-plus": "/apps/@one/ui/element-plus/index.full.min.js",
+    "element-plus/dist/index.css": "/apps/@one/ui/element-plus/index.css#LINK",
+    "pinia": "Pinia",
+    "vant": "/apps/@one/ui/vant/vant.min.js",
+    "vant/lib/index.css": "/apps/@one/ui/vant/index.css#LINK",
+    "vue": "Vue",
+    "vue-router": "VueRouter"
+  }
+}

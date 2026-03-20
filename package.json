@@ -1,0 +1,49 @@
+{
+  "name": "@one/web",
+  "version": "26.3.12",
+  "private": true,
+  "scripts": {
+    "serve": "rsbuild serve",
+    "build": "rsbuild build",
+    "preview": "rsbuild serve",
+    "lint": "oxfmt && oxlint --fix",
+    "api": "cli api -s apifox密钥 -p apifox项目id",
+    "app2build": "cli app2build"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "~2.3.0",
+    "@one/core": "~3.2.0",
+    "@one/demos": "~3.2.0",
+    "@one/table": "~3.2.0",
+    "@one/ui": "~3.2.0",
+    "axios": "~1.13.0",
+    "echarts": "~6.0.0",
+    "element-plus": "~2.13.0",
+    "pinia": "~3.0.0",
+    "vue": "~3.5.0",
+    "vue-router": "~4.6.0"
+  },
+  "devDependencies": {
+    "@one/cli": "~3.2.0",
+    "@one/rscli": "~3.2.0",
+    "@rsbuild/core": "~1.7.0",
+    "@rsbuild/plugin-basic-ssl": "~1.2.0",
+    "@rsbuild/plugin-sass": "~1.5.0",
+    "@rsbuild/plugin-vue": "~1.2.0",
+    "@tailwindcss/postcss": "~4.1.0",
+    "oxfmt": "~0.27.0",
+    "oxlint": "~1.42.0",
+    "tailwindcss": "~4.1.0",
+    "typescript": "~5.9.0"
+  },
+  "browserslist": [
+    "Chrome >= 91",
+    "Edge >= 91",
+    "Safari >= 13.1",
+    "IOS >= 13.4"
+  ],
+  "engines": {
+    "node": ">=20",
+    "pnpm": "8"
+  }
+}

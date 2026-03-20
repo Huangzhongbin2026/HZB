@@ -1,0 +1,7 @@
+@import 'tailwindcss/theme';
+@import 'tailwindcss/preflight';
+@import 'tailwindcss/utilities';
+@source "../src";
+@source "../public/apps";
+
+/* 支持lightingcss */

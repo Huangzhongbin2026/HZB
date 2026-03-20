@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="/assets/favicon.ico">
+  <title>默认页面</title>
+  <script data-env>
+  window._env_ = Object.assign(
+    {
+      ENV: "dev",
+      API: '/api',
+      GW_SYSID: '',
+      GW_ACCESS_KEY_SECRET: ''
+    },
+    "%ENV%"
+  )
+  </script>
+  <script data-system>
+  window.$system = {
+    routes: [{
+      path: '/about',
+      component: '/apps/@one/demos/About.js',
+      meta: { layoutKey: 'LayoutAdmin' }
+    }],
+    LayoutAdmin: {},
+    sentry: ''
+  }
+  </script>
+</head>
+  
+<body>
+  <div id="app"></div>
+  <script src="/apps/@one/core/index.vue.min.js"></script>
+  <script src="/project.json" type="systemjs-importmap"></script>
+  <script src="/index.js"></script>
+</body>
+
+</html>

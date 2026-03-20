@@ -1,0 +1,237 @@
+openapi: 3.0.3
+info:
+  title: 供应链统筹任务管理平台 API
+  version: 1.0.0
+  description: 任务管理、配置管理、报表统计、消息推送接口
+servers:
+  - url: /api/v1/supply/task
+paths:
+  /tasks:
+    post:
+      summary: 创建任务
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseTaskId'
+    get:
+      summary: 查询任务列表
+      parameters:
+        - name: pageNo
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: keyword
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseTaskPage'
+  /tasks/{id}:
+    get:
+      summary: 查询任务详情
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseTask'
+  /tasks/{id}/transfer:
+    post:
+      summary: 转派任务
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetUserId:
+                  type: string
+      responses:
+        '200':
+          description: 成功
+  /tasks/{id}/close:
+    post:
+      summary: 关闭任务
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: 成功
+  /configs/leave:
+    get:
+      summary: 查询请假代理配置
+      responses:
+        '200':
+          description: 成功
+    put:
+      summary: 保存请假代理配置
+      responses:
+        '200':
+          description: 成功
+  /configs/message-switch:
+    get:
+      summary: 查询消息开关
+      responses:
+        '200':
+          description: 成功
+    put:
+      summary: 保存消息开关
+      responses:
+        '200':
+          description: 成功
+  /reports/dashboard:
+    get:
+      summary: 查询大屏统计
+      responses:
+        '200':
+          description: 成功
+components:
+  schemas:
+    ApiResponseTaskId:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          type: object
+          properties:
+            taskId:
+              type: string
+        message:
+          type: string
+        traceId:
+          type: string
+    ApiResponseTaskPage:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          type: object
+          properties:
+            list:
+              type: array
+              items:
+                $ref: '#/components/schemas/TaskVO'
+            total:
+              type: integer
+        message:
+          type: string
+        traceId:
+          type: string
+    ApiResponseTask:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          $ref: '#/components/schemas/TaskVO'
+        message:
+          type: string
+        traceId:
+          type: string
+    TaskCreateRequest:
+      type: object
+      required:
+        - type
+        - title
+        - productModel
+        - requester
+        - requiredDate
+        - reason
+        - priority
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        orderNo:
+          type: string
+        productModel:
+          type: string
+        requester:
+          type: string
+        requiredDate:
+          type: string
+        reason:
+          type: string
+        priority:
+          type: integer
+    TaskVO:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+        title:
+          type: string
+        productModel:
+          type: string
+        requester:
+          type: string
+        coordinator:
+          type: string
+        dueAt:
+          type: string
+        priority:
+          type: integer
+        createdAt:
+          type: string

@@ -57,7 +57,9 @@ bash <(curl -fsSL http://one.ruijie.com.cn/libs/skills.sh)
 - 版本与迭代管理规范：./docs/06-代码版本与迭代管理规范.md
 - 需求与变更台账：./docs/07-需求与变更记录.md
 - 环境与缺失配置清单：./docs/08-环境与缺失配置清单.md
+- 本机环境安装指南：./docs/09-本机环境安装指南.md
 - 关键节点备份脚本：./scripts/git-keypoint-backup.ps1
+- 环境自检脚本：./scripts/check-env.ps1
 - 本地数据库编排：./deploy/docker-compose.local.yml
 
 ## 前端访问入口

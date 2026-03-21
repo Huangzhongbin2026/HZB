@@ -1,0 +1,30 @@
+openapi: 3.0.3
+info:
+  title: 辅助功能模块 API
+  version: 1.0.0
+servers:
+  - url: /api/v1/supply/system/aux
+paths:
+  /leave-configs:
+    get: { summary: 请假配置查询, responses: { '200': { description: success } } }
+    post: { summary: 请假配置新增, responses: { '200': { description: success } } }
+  /leave-configs/match/by-user:
+    get: { summary: 根据人员查询请假状态, responses: { '200': { description: success } } }
+  /virtual-products:
+    get: { summary: 虚拟产品查询, responses: { '200': { description: success } } }
+    post: { summary: 虚拟产品新增, responses: { '200': { description: success } } }
+  /virtual-products/match:
+    get: { summary: 产品型号匹配自动回复, responses: { '200': { description: success } } }
+  /message-pushes:
+    get: { summary: 消息推送配置查询, responses: { '200': { description: success } } }
+    post: { summary: 消息推送配置新增, responses: { '200': { description: success } } }
+  /leave-agent-products:
+    get: { summary: 请假代理产品查询, responses: { '200': { description: success } } }
+    post: { summary: 请假代理产品新增, responses: { '200': { description: success } } }
+  /leave-agent-products/match:
+    get: { summary: 请假代理匹配, responses: { '200': { description: success } } }
+  /area-coordinators:
+    get: { summary: 区域统筹查询, responses: { '200': { description: success } } }
+    post: { summary: 区域统筹新增, responses: { '200': { description: success } } }
+  /area-coordinators/match:
+    get: { summary: 区域统筹匹配, responses: { '200': { description: success } } }

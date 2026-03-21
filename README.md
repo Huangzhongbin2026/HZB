@@ -54,6 +54,13 @@ bash <(curl -fsSL http://one.ruijie.com.cn/libs/skills.sh)
 - 系统管理开发手册：./docs/14-系统管理模块开发手册.md
 - 系统管理测试用例：./docs/15-系统管理模块测试用例.md
 - 系统管理 OpenAPI：./docs/16-系统管理模块-openapi.yaml
+- 辅助模块架构与流程：./docs/24-辅助功能模块架构与流程.md
+- 辅助模块建表脚本：./docs/25-辅助功能模块建表.sql
+- 辅助模块表结构说明：./docs/26-辅助功能模块表结构说明.md
+- 辅助模块使用手册：./docs/27-辅助功能模块使用手册.md
+- 辅助模块开发手册：./docs/28-辅助功能模块开发手册.md
+- 辅助模块测试用例：./docs/29-辅助功能模块测试用例.md
+- 辅助模块 OpenAPI：./docs/30-辅助功能模块-openapi.yaml
 - 数据库初始化脚本：./docs/03-数据库初始化脚本.sql
 - OpenAPI 文档：./docs/04-接口文档-openapi.yaml
 - 核心测试用例：./docs/05-测试用例.md
@@ -75,6 +82,7 @@ bash <(curl -fsSL http://one.ruijie.com.cn/libs/skills.sh)
 
 - /views/SupplyTask/index.js?label=供应链统筹任务管理平台
 - /views/SystemManage/index.js?label=系统管理模块
+- /views/AuxiliaryManage/index.js?label=辅助功能模块
 
 ## 后端本地运行（示例）
 

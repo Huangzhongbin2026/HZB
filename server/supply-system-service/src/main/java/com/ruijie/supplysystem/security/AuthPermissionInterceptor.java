@@ -26,7 +26,13 @@ public class AuthPermissionInterceptor implements HandlerInterceptor {
 
         String permissionHeader = request.getHeader("X-Permissions");
         Set<String> codes = permissionHeader == null || permissionHeader.isBlank()
-                ? Set.of("sys:menu:view", "sys:dict:view", "sys:role:view", "sys:user:view", "sys:log:view")
+            ? Set.of("sys:menu:view", "sys:dict:view", "sys:role:view", "sys:user:view", "sys:log:view",
+            "aux:leave:view", "aux:leave:add", "aux:leave:edit", "aux:leave:delete", "aux:leave:import", "aux:leave:export", "aux:leave:match",
+            "aux:virtual:view", "aux:virtual:add", "aux:virtual:edit", "aux:virtual:delete", "aux:virtual:import", "aux:virtual:export", "aux:virtual:match",
+            "aux:message:view", "aux:message:add", "aux:message:edit", "aux:message:delete", "aux:message:import", "aux:message:export",
+            "aux:agent:view", "aux:agent:add", "aux:agent:edit", "aux:agent:delete", "aux:agent:import", "aux:agent:export", "aux:agent:match",
+            "aux:area:view", "aux:area:add", "aux:area:edit", "aux:area:delete", "aux:area:import", "aux:area:export", "aux:area:match",
+            "aux:cache:refresh")
                 : Arrays.stream(permissionHeader.split(",")).map(String::trim).collect(Collectors.toSet());
         PermissionContext.set(codes);
         return true;

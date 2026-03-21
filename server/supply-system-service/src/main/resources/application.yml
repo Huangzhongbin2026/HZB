@@ -4,6 +4,24 @@ server:
 spring:
   application:
     name: supply-system-service
+  datasource:
+    url: jdbc:mysql://101.37.82.87:3306/jithub_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: Root@1989717
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: 101.37.82.87
+      port: 6379
+      password: Redis@1989717
+      database: 0
+      timeout: 5000ms
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.ruijie.supplysystem.dto
+  configuration:
+    map-underscore-to-camel-case: true
 
 springdoc:
   api-docs:

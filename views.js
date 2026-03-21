@@ -10,6 +10,7 @@ module.exports = {
   '/index.js': './src/index.ts', // 页面入口
   '/views/SupplyTask/index.js?label=供应链统筹任务管理平台': './src/views/SupplyTask/index.vue',
   '/views/SystemManage/index.js?label=系统管理模块': './src/views/SystemManage/index.vue',
+  '/views/AuxiliaryManage/index.js?label=辅助功能模块': './src/views/AuxiliaryManage/index.vue',
   // '/views/HelloWorld/index.js?label=你好世界': './src/views/HelloWorld/index.vue'
   示例: require('@one/demos/views.js'), // node_modules/@one/demos/src包含示例源码
 }

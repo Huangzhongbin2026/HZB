@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: 系统管理模块 API
+  version: 1.0.0
+servers:
+  - url: /api/v1/supply/system
+paths:
+  /menus/tree:
+    get:
+      summary: 菜单树查询
+      responses:
+        '200': { description: success }
+  /menus:
+    post:
+      summary: 新增菜单
+      responses:
+        '200': { description: success }
+  /dicts/types:
+    get:
+      summary: 字典分类查询
+      responses:
+        '200': { description: success }
+  /dicts/items:
+    get:
+      summary: 字典项查询
+      responses:
+        '200': { description: success }
+  /roles:
+    get:
+      summary: 角色查询
+      responses:
+        '200': { description: success }
+  /roles/{id}/permissions:
+    post:
+      summary: 角色权限配置
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: success }
+  /users:
+    get:
+      summary: 用户查询
+      responses:
+        '200': { description: success }
+  /users/{id}/roles:
+    post:
+      summary: 用户角色分配
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: success }
+  /logs:
+    get:
+      summary: 日志查询
+      responses:
+        '200': { description: success }
+  /logs/clean:
+    post:
+      summary: 日志清理
+      responses:
+        '200': { description: success }

@@ -47,11 +47,20 @@ bash <(curl -fsSL http://one.ruijie.com.cn/libs/skills.sh)
 
 - 架构基线文档：./docs/01-架构设计基线.md
 - 整体架构设计：./docs/02-整体项目架构设计.md
+- 系统管理架构与流程：./docs/10-系统管理模块架构与流程.md
+- 系统管理建表脚本：./docs/11-系统管理模块建表.sql
+- 系统管理表结构说明：./docs/12-系统管理表结构设计说明.md
+- 系统管理使用手册：./docs/13-系统管理模块使用手册.md
+- 系统管理开发手册：./docs/14-系统管理模块开发手册.md
+- 系统管理测试用例：./docs/15-系统管理模块测试用例.md
+- 系统管理 OpenAPI：./docs/16-系统管理模块-openapi.yaml
 - 数据库初始化脚本：./docs/03-数据库初始化脚本.sql
 - OpenAPI 文档：./docs/04-接口文档-openapi.yaml
 - 核心测试用例：./docs/05-测试用例.md
 - 前端核心页面：./src/views/SupplyTask/
+- 前端系统管理页面：./src/views/SystemManage/
 - 后端核心代码骨架：./server/supply-task-service/
+- 后端系统管理服务：./server/supply-system-service/
 - 部署脚本：./deploy/frontend-deploy.ps1、./deploy/backend-deploy.ps1
 - 版本变更记录：./CHANGELOG.md
 - 版本与迭代管理规范：./docs/06-代码版本与迭代管理规范.md
@@ -65,6 +74,7 @@ bash <(curl -fsSL http://one.ruijie.com.cn/libs/skills.sh)
 ## 前端访问入口
 
 - /views/SupplyTask/index.js?label=供应链统筹任务管理平台
+- /views/SystemManage/index.js?label=系统管理模块
 
 ## 后端本地运行（示例）
 

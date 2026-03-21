@@ -22,6 +22,7 @@ public/views/*
 public/chunks/*
 public/.rsbuild
 public/.rsdoctor
+**/target/
 
 # apps
 public/apps

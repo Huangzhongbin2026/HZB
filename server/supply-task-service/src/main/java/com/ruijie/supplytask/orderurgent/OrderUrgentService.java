@@ -88,7 +88,6 @@ public class OrderUrgentService {
         extracted.put("supplyCoordinatorList", collect(orderData, "供应统筹"));
         extracted.put("orderPlaceDateList", orderPlaceDateList);
 
-        @SuppressWarnings("unchecked")
         Map<String, String> aiPayload = body.get("aiPayload") instanceof Map<?, ?>
                 ? ((Map<?, ?>) body.get("aiPayload")).entrySet().stream().collect(Collectors.toMap(
                 x -> String.valueOf(x.getKey()), x -> String.valueOf(x.getValue()), (a, b) -> b))
@@ -247,7 +246,6 @@ public class OrderUrgentService {
         List<Map<String, Object>> rows = new ArrayList<>();
         for (Map<String, Object> item : orderData) {
             String marketCode = asText(item.get("市场代码名称"));
-            String virtualFlag = asText(item.get("是否虚拟"));
             if (!keepAllByVirtual && marketCode.isBlank()) {
                 continue;
             }
@@ -396,6 +394,64 @@ public class OrderUrgentService {
     private List<Map<String, Object>> mockOrderData(String contractNo) {
         if (!contractNo.matches("[A-Za-z0-9-]{6,}")) {
             return List.of();
+        }
+        if ("100226031700302".equals(contractNo)) {
+            return List.of(
+                mapOf(
+                    "合同编号", contractNo,
+                    "订单编号", "11101117663",
+                    "订单行", "1.1",
+                    "供应统筹", "黄某某",
+                    "商务助理名称", "黄某某",
+                    "商务助理员工ID", "ou_9e45b18b0814fbef6b59d9f3f259bdb6",
+                    "约定交期-ODC", LocalDate.now().plusDays(8).format(DATE),
+                    "CRM项目编码", "20240613000157",
+                    "项目名称", "广州校园网络项目",
+                    "市场代码名称", "RG-PA1600I",
+                    "未发货数量", 6,
+                    "部门名称", "平台管理部",
+                    "区域", "广东",
+                    "齐套日期", LocalDate.now().plusDays(3).format(DATE),
+                    "客户类型", "代理商",
+                    "客户期望交期", LocalDate.now().plusDays(5).format(DATE),
+                    "下单日期", LocalDate.now().minusDays(1).format(DATE),
+                    "结算金额(人民币)", 1800,
+                    "订单金额", 5200,
+                    "物料描述", "电源模块",
+                    "订单类型", "非特价下单",
+                    "业务员姓名", "黄忠彬",
+                    "最新风险等级", "",
+                    "是否闭环", "",
+                    "是否虚拟", "N"
+                ),
+                mapOf(
+                    "合同编号", contractNo,
+                    "订单编号", "11101117663",
+                    "订单行", "2.1",
+                    "供应统筹", "王某某",
+                    "商务助理名称", "黄某某",
+                    "商务助理员工ID", "ou_9e45b18b0814fbef6b59d9f3f259bdb6",
+                    "约定交期-ODC", LocalDate.now().plusDays(10).format(DATE),
+                    "CRM项目编码", "20240613000157",
+                    "项目名称", "广州校园网络项目",
+                    "市场代码名称", "RG-PA1600I-F",
+                    "未发货数量", 2,
+                    "部门名称", "平台管理部",
+                    "区域", "广东",
+                    "齐套日期", LocalDate.now().plusDays(4).format(DATE),
+                    "客户类型", "代理商",
+                    "客户期望交期", LocalDate.now().plusDays(6).format(DATE),
+                    "下单日期", LocalDate.now().minusDays(1).format(DATE),
+                    "结算金额(人民币)", 700,
+                    "订单金额", 2200,
+                    "物料描述", "电源模块-F",
+                    "订单类型", "非特价下单",
+                    "业务员姓名", "黄忠彬",
+                    "最新风险等级", "",
+                    "是否闭环", "",
+                    "是否虚拟", "N"
+                )
+            );
         }
         String today = LocalDate.now().format(DATE);
         return List.of(

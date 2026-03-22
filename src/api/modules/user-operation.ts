@@ -10,7 +10,7 @@ export const userOperationApi = {
     status: string
     payload?: Record<string, any>
   }) {
-    return axios.post<boolean>('/v1/supply/task/user-operation/record', data)
+    return axios.post<boolean>('/api/v1/supply/task/user-operation/record', data)
   },
   list(params: {
     pageNo: number
@@ -21,6 +21,6 @@ export const userOperationApi = {
     status?: string
     createdAt?: string
   }) {
-    return axios.get<{ list: Array<Record<string, any>>; total: number }>('/v1/supply/task/user-operation/list', { params })
+    return axios.get<{ list: Array<Record<string, any>>; total: number }>('/api/v1/supply/task/user-operation/list', { params })
   },
 }

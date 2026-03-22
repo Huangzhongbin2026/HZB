@@ -403,6 +403,16 @@ public class UnorderedConsultService {
     }
 
     private List<Map<String, Object>> mockPlanData(String crm) {
+        if ("20240613000157".equals(crm)) {
+            return List.of(
+                    mapOf("CRM编号", crm, "产品型号", "RG-PA1600I", "产品名称", "PoE电源", "数量", 6, "客期", LocalDate.now().plusDays(7).format(DATE),
+                            "是否备货", "是", "勾选或取消备货时间", LocalDate.now().minusDays(1).format(DATE), "一级部门", "平台管理部", "三级部门", "广东区域",
+                            "机会所有人", "黄忠彬", "业务机会名称", "广州校园网络项目", "客户名称", "广州某学校", "是否退市报备", "否", "产品流速", "80"),
+                    mapOf("CRM编号", crm, "产品型号", "RG-PA1600I-F", "产品名称", "PoE电源-F", "数量", 2, "客期", LocalDate.now().plusDays(9).format(DATE),
+                            "是否备货", "否", "勾选或取消备货时间", LocalDate.now().minusDays(1).format(DATE), "一级部门", "平台管理部", "三级部门", "广东区域",
+                            "机会所有人", "黄忠彬", "业务机会名称", "广州校园网络项目", "客户名称", "广州某学校", "是否退市报备", "否", "产品流速", "65")
+            );
+        }
         if (crm.startsWith("000") || crm.length() < 6) {
             return List.of();
         }

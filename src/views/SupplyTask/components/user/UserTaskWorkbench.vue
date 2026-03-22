@@ -42,9 +42,10 @@ const TASK_TYPE_LABEL: Record<UserTaskType, string> = {
 }
 
 const defaultUser = reactive<UserProfile>({
-  id: 'u-demo-001',
-  name: '黄某某',
+  id: 'u-hzb-001',
+  name: '黄忠彬',
   avatarText: '头像',
+  feishuOpenId: 'ou_9e45b18b0814fbef6b59d9f3f259bdb6',
 })
 
 const currentTaskType = ref<UserTaskType | null>(null)

@@ -5,6 +5,7 @@ export interface LeaveConfigItem {
   leaveStart: string
   leaveEnd: string
   leaveReason?: string
+  remark?: string
   status: boolean
 }
 
@@ -40,10 +41,14 @@ export interface AreaCoordinatorItem {
   id: string
   saleDeptCode: string
   provinceCode: string
+  region?: string
   deptKeyword?: string
   projectKeyword?: string
   coordinatorUserId: string
   coordinatorUserName: string
+  agentCoordinatorUserId: string
+  agentCoordinatorUserName: string
+  createdAt?: string
   priorityNo: number
   status: boolean
 }

@@ -10,5 +10,6 @@ public class LeaveConfigDTO {
     private String leaveStart;
     private String leaveEnd;
     private String leaveReason;
+    private String remark;
     private Boolean status;
 }

@@ -55,7 +55,7 @@ onMounted(loadData)
       <el-form-item label="人员名称"><el-input v-model="query.userName" /></el-form-item>
       <el-form-item><el-button type="primary" @click="loadData">查询</el-button></el-form-item>
       <el-form-item><el-button @click="dialogVisible = true">新增</el-button></el-form-item>
-      <el-form-item><TemplateDownload name="leave-config" :columns="['userId','userName','leaveStart','leaveEnd','leaveReason']" /></el-form-item>
+      <el-form-item><TemplateDownload name="leave-config" :columns="['userId','userName','leaveStart','leaveEnd','leaveReason','remark']" /></el-form-item>
       <el-form-item><ExcelImport @parsed="onParsed" /></el-form-item>
       <el-form-item><el-button @click="auxiliaryApi.exportLeaveConfigs(query)">导出</el-button></el-form-item>
     </el-form>
@@ -66,6 +66,7 @@ onMounted(loadData)
       <el-table-column prop="leaveStart" label="开始时间" min-width="170" />
       <el-table-column prop="leaveEnd" label="结束时间" min-width="170" />
       <el-table-column prop="leaveReason" label="请假原因" min-width="180" />
+      <el-table-column prop="remark" label="备注" min-width="160" />
       <el-table-column label="操作" width="100">
         <template #default="scope">
           <el-button link type="danger" @click="remove(scope.row.id)">删除</el-button>
@@ -84,6 +85,7 @@ onMounted(loadData)
         <el-form-item label="开始时间"><el-date-picker v-model="form.leaveStart" type="datetime" value-format="YYYY-MM-DDTHH:mm:ss" /></el-form-item>
         <el-form-item label="结束时间"><el-date-picker v-model="form.leaveEnd" type="datetime" value-format="YYYY-MM-DDTHH:mm:ss" /></el-form-item>
         <el-form-item label="请假原因"><el-input v-model="form.leaveReason" type="textarea" /></el-form-item>
+        <el-form-item label="备注"><el-input v-model="form.remark" type="textarea" /></el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>

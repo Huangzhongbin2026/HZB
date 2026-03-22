@@ -50,7 +50,7 @@ const onParsed = async (rows: Record<string, unknown>[]) => {
 
 const doMatch = async () => {
   const res = await auxiliaryApi.matchAreaCoordinator(matchQuery)
-  matchResult.value = `匹配结果：${res.data.coordinatorUserName || '未命中'} (${res.data.coordinatorUserId || '-'})`
+  matchResult.value = `匹配结果：${res.data.coordinatorUserName || '未命中'} (${res.data.coordinatorUserId || '-'}) / 代理：${res.data.agentCoordinatorUserName || '-'} (${res.data.agentCoordinatorUserId || '-'})`
 }
 
 onMounted(loadData)
@@ -65,7 +65,7 @@ onMounted(loadData)
       <el-form-item label="区域统筹"><el-input v-model="query.coordinatorUserName" /></el-form-item>
       <el-form-item><el-button type="primary" @click="loadData">查询</el-button></el-form-item>
       <el-form-item><el-button @click="dialogVisible = true">新增</el-button></el-form-item>
-      <el-form-item><TemplateDownload name="area-coordinator" :columns="['saleDeptCode','provinceCode','deptKeyword','projectKeyword','coordinatorUserId','coordinatorUserName','priorityNo']" /></el-form-item>
+      <el-form-item><TemplateDownload name="area-coordinator" :columns="['saleDeptCode','provinceCode','region','deptKeyword','projectKeyword','coordinatorUserId','coordinatorUserName','agentCoordinatorUserId','agentCoordinatorUserName','priorityNo']" /></el-form-item>
       <el-form-item><ExcelImport @parsed="onParsed" /></el-form-item>
       <el-form-item><el-button @click="auxiliaryApi.exportAreaCoordinators(query)">导出</el-button></el-form-item>
     </el-form>
@@ -84,9 +84,11 @@ onMounted(loadData)
     <el-table :data="list" border row-key="id" v-loading="loading">
       <el-table-column prop="saleDeptCode" label="销售部门" min-width="120" />
       <el-table-column prop="provinceCode" label="省份" min-width="100" />
+      <el-table-column prop="region" label="区域" min-width="100" />
       <el-table-column prop="deptKeyword" label="部门关键词" min-width="120" />
       <el-table-column prop="projectKeyword" label="项目关键词" min-width="120" />
       <el-table-column prop="coordinatorUserName" label="区域统筹" min-width="120" />
+      <el-table-column prop="agentCoordinatorUserName" label="代理区域统筹" min-width="130" />
       <el-table-column prop="priorityNo" label="优先级" width="90" />
       <el-table-column label="操作" width="100"><template #default="scope"><el-button link type="danger" @click="remove(scope.row.id)">删除</el-button></template></el-table-column>
     </el-table>
@@ -97,10 +99,13 @@ onMounted(loadData)
       <el-form label-width="120px">
         <el-form-item label="销售部门"><el-input v-model="form.saleDeptCode" /></el-form-item>
         <el-form-item label="省份"><el-input v-model="form.provinceCode" /></el-form-item>
+        <el-form-item label="区域"><el-input v-model="form.region" /></el-form-item>
         <el-form-item label="部门关键词"><el-input v-model="form.deptKeyword" /></el-form-item>
         <el-form-item label="项目关键词"><el-input v-model="form.projectKeyword" /></el-form-item>
         <el-form-item label="统筹ID"><el-input v-model="form.coordinatorUserId" /></el-form-item>
         <el-form-item label="统筹名称"><el-input v-model="form.coordinatorUserName" /></el-form-item>
+        <el-form-item label="代理统筹ID"><el-input v-model="form.agentCoordinatorUserId" /></el-form-item>
+        <el-form-item label="代理统筹名称"><el-input v-model="form.agentCoordinatorUserName" /></el-form-item>
         <el-form-item label="优先级"><el-input-number v-model="form.priorityNo" :min="1" /></el-form-item>
       </el-form>
       <template #footer><el-button @click="dialogVisible = false">取消</el-button><el-button type="primary" @click="save">保存</el-button></template>

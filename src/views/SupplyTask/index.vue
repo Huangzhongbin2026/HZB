@@ -1,67 +1,184 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import TaskSubmitForm from './components/TaskSubmitForm.vue'
-import TaskListPanel from './components/TaskListPanel.vue'
-import ConfigPanel from './components/ConfigPanel.vue'
-import DashboardPanel from './components/DashboardPanel.vue'
+import { computed, ref } from 'vue'
+import UserTaskWorkbench from './components/user/UserTaskWorkbench.vue'
+import OrderUrgentManagement from './components/user/OrderUrgentManagement.vue'
+import UnorderedConsultManagement from './components/user/UnorderedConsultManagement.vue'
+import DeliveryChangeManagement from './components/user/DeliveryChangeManagement.vue'
+import UserOperationRecordManagement from './components/user/UserOperationRecordManagement.vue'
+import AuxiliaryManageIndex from '@/views/AuxiliaryManage/index.vue'
+import SystemManageIndex from '@/views/SystemManage/index.vue'
 
-const activeTab = ref('submit')
+const isManagement = computed(() => {
+  const search = new URLSearchParams(window.location.search)
+  return search.get('mode') === 'management'
+})
+
+const queryTab = new URLSearchParams(window.location.search).get('tab')
+const activeManagementTab = ref(
+  queryTab === 'urgent' || queryTab === 'delivery' || queryTab === 'operation' || queryTab === 'auxiliary' || queryTab === 'system'
+    ? queryTab
+    : 'unordered',
+)
+
+const menuItems = [
+  { key: 'unordered', label: '未下单交期评估任务' },
+  { key: 'urgent', label: '已下单加急任务' },
+  { key: 'delivery', label: '客期变更任务' },
+  { key: 'operation', label: '用户操作记录' },
+  { key: 'auxiliary', label: '辅助功能' },
+  { key: 'system', label: '系统管理' },
+] as const
+
+const switchTab = (tab: (typeof menuItems)[number]['key']) => {
+  activeManagementTab.value = tab
+  const url = new URL(window.location.href)
+  url.searchParams.set('mode', 'management')
+  url.searchParams.set('tab', tab)
+  window.history.replaceState({}, '', url)
+}
 </script>
 
 <template>
-  <div class="page-wrap">
-    <header class="page-header">
-      <h1>供应链统筹任务管理平台</h1>
-      <p>订单加急、未下单评估、客期变更统一在线处理</p>
+  <div v-if="isManagement" class="manage-shell">
+    <header class="manage-header">
+      <div class="header-title">任务管理平台</div>
+      <div class="header-subtitle">经典管理后台视图 · 统一菜单与模块切换</div>
     </header>
 
-    <el-tabs v-model="activeTab" class="main-tabs" type="border-card">
-      <el-tab-pane name="submit" label="任务提交">
-        <TaskSubmitForm />
-      </el-tab-pane>
-      <el-tab-pane name="list" label="任务列表">
-        <TaskListPanel />
-      </el-tab-pane>
-      <el-tab-pane name="config" label="配置管理">
-        <ConfigPanel />
-      </el-tab-pane>
-      <el-tab-pane name="dashboard" label="数据大屏">
-        <DashboardPanel />
-      </el-tab-pane>
-    </el-tabs>
+    <div class="manage-page">
+      <aside class="manage-sidebar">
+        <div class="menu-group-title">功能导航</div>
+        <button
+          v-for="item in menuItems"
+          :key="item.key"
+          class="menu-item"
+          :class="{ active: activeManagementTab === item.key }"
+          @click="switchTab(item.key)"
+        >
+          {{ item.label }}
+        </button>
+      </aside>
+
+      <section class="manage-main">
+        <UnorderedConsultManagement v-if="activeManagementTab === 'unordered'" />
+        <OrderUrgentManagement v-else-if="activeManagementTab === 'urgent'" />
+        <DeliveryChangeManagement v-else-if="activeManagementTab === 'delivery'" />
+        <UserOperationRecordManagement v-else-if="activeManagementTab === 'operation'" />
+        <AuxiliaryManageIndex v-else-if="activeManagementTab === 'auxiliary'" />
+        <SystemManageIndex v-else />
+      </section>
+    </div>
   </div>
+  <UserTaskWorkbench v-else />
 </template>
 
 <style scoped>
-.page-wrap {
+.manage-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: #f3f5f9;
+  display: grid;
+  grid-template-rows: 62px 1fr;
+}
+
+.manage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid #e6ebf3;
+  background: #ffffff;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2a44;
+}
+
+.header-subtitle {
+  font-size: 13px;
+  color: #6b7892;
+}
+
+.manage-page {
   min-height: 100vh;
-  padding: 16px;
-  background: linear-gradient(160deg, #ecfeff, #f8fafc 40%, #fffbeb);
+  display: grid;
+  grid-template-columns: 236px 1fr;
 }
 
-.page-header {
-  margin-bottom: 16px;
-  padding: 18px;
-  border: 1px solid #dbeafe;
-  border-radius: 14px;
-  background: #ffffffcc;
-  backdrop-filter: blur(2px);
+.manage-sidebar {
+  background: linear-gradient(180deg, #1d2e57, #1a2543 55%, #17203a);
+  color: #dce6fb;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.08);
 }
 
-.page-header h1 {
-  margin: 0;
-  color: #0f172a;
-  font-size: 24px;
-  font-weight: 800;
+.menu-group-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.78;
+  padding: 8px 10px;
 }
 
-.page-header p {
-  margin: 6px 0 0;
-  color: #475569;
-  font-size: 14px;
+.menu-item {
+  border: 0;
+  text-align: left;
+  color: #d6def3;
+  background: transparent;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.main-tabs :deep(.el-tabs__content) {
-  padding: 14px;
+.menu-item:hover {
+  background: rgba(130, 164, 236, 0.2);
+}
+
+.menu-item.active {
+  color: #fff;
+  background: linear-gradient(90deg, #3f63c9, #3150aa);
+  box-shadow: 0 6px 14px rgba(43, 83, 181, 0.35);
+}
+
+.manage-main {
+  padding: 14px 16px;
+  overflow: auto;
+}
+
+@media (max-width: 960px) {
+  .manage-shell {
+    grid-template-rows: auto 1fr;
+  }
+
+  .manage-header {
+    padding: 10px 12px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .manage-page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .manage-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .menu-group-title {
+    grid-column: 1 / -1;
+    padding: 0;
+  }
 }
 </style>

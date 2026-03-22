@@ -1,55 +1,96 @@
 package com.ruijie.supplysystem.service.impl;
 
+import com.ruijie.supplysystem.common.BusinessException;
 import com.ruijie.supplysystem.dto.SysUserDTO;
+import com.ruijie.supplysystem.mapper.UserMapper;
 import com.ruijie.supplysystem.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
+    private final UserMapper userMapper;
 
     @Override
     public List<SysUserDTO> list() {
-        List<SysUserDTO> list = new ArrayList<>();
-        SysUserDTO dto = new SysUserDTO();
-        dto.setId("1");
-        dto.setUserName("管理员");
-        dto.setAccount("admin");
-        dto.setMobile("13800000000");
-        dto.setFeishuId("ou_admin");
-        dto.setDeptCode("IT");
-        dto.setStatus(true);
-        dto.setLastLoginAt("2026-03-21T09:30:00+08:00");
-        list.add(dto);
-        return list;
+        return userMapper.list();
     }
 
     @Override
-    public Boolean save(SysUserDTO dto) { return Boolean.TRUE; }
+    public Boolean save(SysUserDTO dto) {
+        String salt = UUID.randomUUID().toString().replace("-", "").substring(0, 16);
+        String passwordHash = PASSWORD_ENCODER.encode("123456" + salt);
+        return userMapper.insert(dto.getUserName(), dto.getAccount(), dto.getMobile(), dto.getFeishuId(), dto.getEmail(),
+                dto.getDeptCode(), passwordHash, salt, dto.getStatus() == null ? Boolean.TRUE : dto.getStatus()) > 0;
+    }
 
     @Override
-    public Boolean update(String id, SysUserDTO dto) { return Boolean.TRUE; }
+    public Boolean update(String id, SysUserDTO dto) {
+        return userMapper.updateById(parseId(id), dto) > 0;
+    }
 
     @Override
-    public Boolean remove(String id) { return Boolean.TRUE; }
+    public Boolean remove(String id) {
+        Long userId = parseId(id);
+        userMapper.clearUserRoles(userId);
+        return userMapper.softDelete(userId) > 0;
+    }
 
     @Override
-    public Boolean assignRoles(String userId, List<String> roleIds) { return Boolean.TRUE; }
+    public Boolean assignRoles(String userId, List<String> roleIds) {
+        Long uid = parseId(userId);
+        userMapper.clearUserRoles(uid);
+        if (roleIds != null) {
+            for (String roleId : roleIds) {
+                userMapper.insertUserRole(uid, parseId(roleId));
+            }
+        }
+        return Boolean.TRUE;
+    }
 
     @Override
-    public Boolean resetPassword(String userId) { return Boolean.TRUE; }
+    public Boolean resetPassword(String userId) {
+        String salt = UUID.randomUUID().toString().replace("-", "").substring(0, 16);
+        String passwordHash = PASSWORD_ENCODER.encode("123456" + salt);
+        return userMapper.resetPassword(parseId(userId), passwordHash, salt) > 0;
+    }
 
     @Override
     public Map<String, Object> permissionSnapshot() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("menuCodes", List.of("sys:menu:view", "sys:dict:view", "sys:role:view", "sys:user:view", "sys:log:view"));
-        result.put("buttonCodes", List.of("sys:user:assignRole", "sys:user:resetPwd"));
-        result.put("dataScopes", Map.of("t_task_main", "ALL"));
-        result.put("fieldPermissions", Map.of("t_task_main", Map.of("customer_price", "HIDDEN", "title", "EDITABLE")));
-        return result;
+        Long userId = 1L;
+        List<String> menuCodes = userMapper.listUserMenuCodes(userId);
+        List<String> buttonCodes = menuCodes.stream().filter(code -> code != null && code.split(":").length >= 3).collect(Collectors.toList());
+
+        Map<String, String> dataScopes = userMapper.listDataScopes(userId).stream()
+                .collect(Collectors.toMap(x -> x.get("bizTable"), x -> x.get("scopeType"), (a, b) -> b));
+
+        Map<String, Map<String, String>> fieldPermissions = userMapper.listFieldPermissions(userId).stream()
+                .collect(Collectors.groupingBy(x -> x.get("bizTable"),
+                        Collectors.toMap(x -> x.get("fieldCode"), x -> x.get("permissionType"), (a, b) -> b)));
+
+        return Map.of(
+                "menuCodes", menuCodes,
+                "buttonCodes", buttonCodes,
+                "dataScopes", dataScopes,
+                "fieldPermissions", fieldPermissions
+        );
+    }
+
+    private Long parseId(String id) {
+        try {
+            return Long.parseLong(id);
+        } catch (Exception ex) {
+            throw new BusinessException(3301, "非法ID: " + id);
+        }
     }
 }

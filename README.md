@@ -80,9 +80,20 @@ bash <(curl -fsSL http://one.ruijie.com.cn/libs/skills.sh)
 
 ## 前端访问入口
 
-- /views/SupplyTask/index.js?label=供应链统筹任务管理平台
-- /views/SystemManage/index.js?label=系统管理模块
-- /views/AuxiliaryManage/index.js?label=辅助功能模块
+- /
+- /?mode=management&tab=unordered
+- /?mode=management&tab=urgent
+- /?mode=management&tab=delivery
+- /?mode=management&tab=operation
+- /?mode=management&tab=auxiliary
+- /?mode=management&tab=system
+
+## 用户端智能解析配置
+
+- Kimi 配置文件：./src/config/ai/kimi-config.json
+- 提示词配置：./src/config/ai/task-prompts.json
+- 将 `apiKey` 填入后，用户端页面将调用 Kimi 进行任务分类与字段抽取。
+- 未填写 `apiKey` 时，前端自动使用本地兜底规则解析，便于联调页面流程。
 
 ## 后端本地运行（示例）
 

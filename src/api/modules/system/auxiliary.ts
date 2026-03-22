@@ -115,6 +115,6 @@ export const auxiliaryApi = {
     return axios.get('/api/v1/supply/system/aux/area-coordinators/export', { params, responseType: 'blob' })
   },
   matchAreaCoordinator(params: Record<string, unknown>) {
-    return axios.get<{ coordinatorUserId: string; coordinatorUserName: string }>('/api/v1/supply/system/aux/area-coordinators/match', { params })
+    return axios.get<{ coordinatorUserId: string; coordinatorUserName: string; agentCoordinatorUserId: string; agentCoordinatorUserName: string }>('/api/v1/supply/system/aux/area-coordinators/match', { params })
   },
 }

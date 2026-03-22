@@ -2,5 +2,6 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "package.json": ".dockerignore, .editorconfig, .gitignore, .gitlab-ci.yml, .npmrc, .oxlintrc.json, .oxfmtrc.json, pnpm-lock.yaml, tsconfig.json, lerna.json, pnpm-workspace.yaml"
-  }
+  },
+  "java.compile.nullAnalysis.mode": "automatic"
 }

@@ -20,6 +20,22 @@
   <script data-system>
   window.$system = {
     routes: [{
+      path: '/',
+      component: '/views/SupplyTask/index.js?label=供应链统筹任务管理平台',
+      meta: { layoutKey: 'LayoutAdmin' }
+    }, {
+      path: '/supply-task',
+      component: '/views/SupplyTask/index.js?label=供应链统筹任务管理平台',
+      meta: { layoutKey: 'LayoutAdmin' }
+    }, {
+      path: '/system-manage',
+      component: '/views/SystemManage/index.js?label=系统管理模块',
+      meta: { layoutKey: 'LayoutAdmin' }
+    }, {
+      path: '/auxiliary-manage',
+      component: '/views/AuxiliaryManage/index.js?label=辅助功能模块',
+      meta: { layoutKey: 'LayoutAdmin' }
+    }, {
       path: '/about',
       component: '/apps/@one/demos/About.js',
       meta: { layoutKey: 'LayoutAdmin' }

@@ -35,6 +35,12 @@ interface OperationRecord {
   feishuId: string
 }
 
+type ApiEnvelope<T> = {
+  code?: number | string
+  message?: string
+  data?: T
+}
+
 const TASK_TYPE_LABEL: Record<UserTaskType, string> = {
   ORDER_URGENT: '订单加急任务',
   UNORDERED_ASSESS: '未下单咨询任务',
@@ -112,6 +118,60 @@ const flowLabelMap: Record<string, string> = {
   DELIVERY_CHANGE: '客期变更',
   CHAT: '智能问答',
 }
+
+const isApiSuccess = <T,>(res: ApiEnvelope<T> | null | undefined): res is ApiEnvelope<T> & { data: T } => {
+  const success = res?.code === 0 || res?.code === '0'
+  return Boolean(success && res?.data != null)
+}
+
+const getApiErrorMessage = (res: ApiEnvelope<unknown> | null | undefined, fallback: string) => {
+  const message = typeof res?.message === 'string' ? res.message.trim() : ''
+  return message || fallback
+}
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const appendTraceId = (message: string, traceId: unknown) => {
+  const trace = String(traceId || '').trim()
+  if (!trace) {
+    return message
+  }
+  return `${message}（traceId: ${trace}）`
+}
+
+const requestOrderUrgentSignature = async () => {
+  let lastRes: ApiEnvelope<{ signature?: string }> | null = null
+  for (let i = 0; i < 2; i += 1) {
+    const signRes = await orderUrgentApi.generateSignature({
+      sys_id: authConfig.sys_id,
+      access_key_secret: authConfig.access_key_secret,
+    })
+    lastRes = signRes
+    if (isApiSuccess(signRes) && signRes.data.signature) {
+      return signRes.data.signature
+    }
+    if (i === 0) {
+      await sleep(150)
+    }
+  }
+  throw new Error(appendTraceId(getApiErrorMessage(lastRes, '签名生成失败，请稍后重试'), (lastRes as any)?.traceId))
+}
+
+const normalizeOrderUrgentAnalyzeData = (raw: OrderUrgentAnalyzeResponse) => ({
+  ...raw,
+  extracted: raw?.extracted || {},
+  orderData: Array.isArray(raw?.orderData) ? raw.orderData : [],
+  orderPlaceDateList: Array.isArray(raw?.orderPlaceDateList) ? raw.orderPlaceDateList : [],
+  expectDeliveryDateList: Array.isArray(raw?.expectDeliveryDateList) ? raw.expectDeliveryDateList : [],
+  agreedDeliveryOdcList: Array.isArray(raw?.agreedDeliveryOdcList) ? raw.agreedDeliveryOdcList : [],
+  emptySearchResult: Array.isArray(raw?.emptySearchResult) ? raw.emptySearchResult : [],
+  productArray: Array.isArray(raw?.productArray) ? raw.productArray : [],
+  coordinator: raw?.coordinator || {
+    name: '',
+    feishuId: '',
+    agentName: '',
+  },
+})
 
 const saveOperationRecord = async (
   flowType: string,
@@ -345,26 +405,44 @@ const submitStep1 = async (fromAi = false) => {
   stepLoading.value = true
   await saveOperationRecord('ORDER_URGENT', '第一步', '合同分析', 'processing', { contractNo })
   try {
-    const signRes = await orderUrgentApi.generateSignature({
-      sys_id: authConfig.sys_id,
-      access_key_secret: authConfig.access_key_secret,
-    })
-    signServerAuth.value = signRes.data.signature
-    const res = await orderUrgentApi.analyzeStep1({
-      contractNo,
-      aiPayload: activeTask.value?.payload || {},
-    }, {
-      sysId: authConfig.sys_id,
-      signServerAuth: signServerAuth.value,
-    })
-    step2Data.value = res.data
+    signServerAuth.value = await requestOrderUrgentSignature()
+
+    let res: ApiEnvelope<OrderUrgentAnalyzeResponse> | null = null
+    for (let i = 0; i < 2; i += 1) {
+      res = await orderUrgentApi.analyzeStep1(
+        {
+          contractNo,
+          aiPayload: activeTask.value?.payload || {},
+        },
+        {
+          sysId: authConfig.sys_id,
+          signServerAuth: signServerAuth.value,
+        },
+      )
+
+      if (isApiSuccess(res)) {
+        break
+      }
+
+      if (i === 0) {
+        // 系统偶发签名校验或后端瞬时异常时重试一次
+        signServerAuth.value = await requestOrderUrgentSignature()
+        await sleep(150)
+      }
+    }
+
+    if (!isApiSuccess(res)) {
+      throw new Error(appendTraceId(getApiErrorMessage(res, '订单加急任务解析失败，请检查合同编号后重试'), (res as any)?.traceId))
+    }
+
+    step2Data.value = normalizeOrderUrgentAnalyzeData(res.data)
     stepNo.value = 2
     Object.assign(urgentForm, {
-      projectUrgency: res.data.projectUrgency || urgentForm.projectUrgency,
-      latestArrivalTime: res.data.latestArrivalTime || urgentForm.latestArrivalTime,
-      acceptPartialShipment: res.data.acceptPartialShipment || urgentForm.acceptPartialShipment,
-      mostUrgentProductList: res.data.mostUrgentProductList || urgentForm.mostUrgentProductList,
-      delayedDeliveryImpact: res.data.delayedDeliveryImpact || urgentForm.delayedDeliveryImpact,
+      projectUrgency: step2Data.value.projectUrgency || urgentForm.projectUrgency,
+      latestArrivalTime: step2Data.value.latestArrivalTime || urgentForm.latestArrivalTime,
+      acceptPartialShipment: step2Data.value.acceptPartialShipment || urgentForm.acceptPartialShipment,
+      mostUrgentProductList: step2Data.value.mostUrgentProductList || urgentForm.mostUrgentProductList,
+      delayedDeliveryImpact: step2Data.value.delayedDeliveryImpact || urgentForm.delayedDeliveryImpact,
     })
     if (!fromAi) {
       historyList.value.unshift({
@@ -377,8 +455,9 @@ const submitStep1 = async (fromAi = false) => {
     }
     await saveOperationRecord('ORDER_URGENT', '第一步', '合同分析', 'success', { contractNo })
   } catch (error: any) {
-    await saveOperationRecord('ORDER_URGENT', '第一步', '合同分析', 'fail', { contractNo, message: error?.data?.message || '' })
-    ElMessage.error(error?.data?.message || '订单加急任务解析失败，请检查合同编号后重试')
+    const message = appendTraceId(error?.data?.message || error?.message || '订单加急任务解析失败，请检查合同编号后重试', error?.data?.traceId)
+    await saveOperationRecord('ORDER_URGENT', '第一步', '合同分析', 'fail', { contractNo, message })
+    ElMessage.error(message)
   } finally {
     stepLoading.value = false
   }
@@ -1494,6 +1573,10 @@ const handleDelayProofChange = (file: any) => {
   border: 1px solid #d9e5f7;
   border-radius: 12px;
   padding: 14px;
+}
+
+.step-block :deep(.el-loading-mask) {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .step-card {

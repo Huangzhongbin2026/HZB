@@ -6,7 +6,7 @@ declare module 'axios' {
 }
 // 这里可以自定义一些配置，例如baseURL / timeout 等
 const axios$ = axios.create({
-  baseURL: '/api',
+  baseURL: '',
   timeout: 15000,
   withCredentials: true,
 })

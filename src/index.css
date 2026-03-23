@@ -5,3 +5,14 @@
 @source "../public/apps";
 
 /* 支持lightingcss */
+
+/* 用户工作台场景下隐藏 core 顶部 widget tabs，避免灰色悬浮条影响体验 */
+body:has(.user-shell) {
+	--one-extra-height: 0px;
+}
+
+body:has(.user-shell) .layout-admin-extra,
+body:has(.user-shell) .widget-tabs-item-arrow,
+body:has(.user-shell) .widget-tabs-container {
+	display: none !important;
+}

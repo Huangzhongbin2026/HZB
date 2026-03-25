@@ -1,0 +1,45 @@
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { listOperationLogs } from '../../api/system'
+import type { LogItem } from '../../types/auth'
+
+const loading = ref(false)
+const tableData = ref<LogItem[]>([])
+
+const loadData = async () => {
+  loading.value = true
+  tableData.value = await listOperationLogs()
+  loading.value = false
+}
+
+onMounted(loadData)
+</script>
+
+<template>
+  <el-card>
+    <template #header>
+      <div class="header-row">
+        <span>系统日志 - 操作日志</span>
+        <el-button v-permission="'btn:log:query'" @click="loadData">刷新</el-button>
+      </div>
+    </template>
+
+    <el-table :data="tableData" v-loading="loading" border>
+      <el-table-column prop="id" label="ID" width="80" />
+      <el-table-column prop="operator" label="操作人" width="120" />
+      <el-table-column prop="module" label="模块" width="140" />
+      <el-table-column prop="action" label="动作" width="120" />
+      <el-table-column prop="detail" label="详情" min-width="280" />
+      <el-table-column prop="ip" label="IP" width="130" />
+      <el-table-column prop="time" label="时间" width="170" />
+    </el-table>
+  </el-card>
+</template>
+
+<style scoped>
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>

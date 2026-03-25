@@ -1,0 +1,45 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+
+spring:
+  application:
+    name: system-service
+  security:
+    user:
+      name: admin
+      password: Admin@123456
+  datasource:
+    url: jdbc:mysql://101.37.82.87:3306/jithub_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: Root@1989717
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+  redis:
+    host: 101.37.82.87
+    port: 6379
+    password: Redis@1989717
+    database: 0
+    timeout: 5000ms
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.ruixiaomi.system
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.ruixiaomi.system.mapper: debug
+    org.mybatis: debug
+
+rbac:
+  token-header: Authorization
+  super-role: admin

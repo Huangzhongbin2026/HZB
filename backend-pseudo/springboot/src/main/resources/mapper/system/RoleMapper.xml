@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruixiaomi.system.mapper.RoleMapper">
+
+  <resultMap id="RoleEntityResultMap" type="com.ruixiaomi.system.model.RoleEntity">
+    <id property="id" column="id"/>
+    <result property="roleName" column="role_name"/>
+    <result property="roleCode" column="role_code"/>
+    <result property="status" column="status"/>
+  </resultMap>
+
+  <select id="selectRoleList" resultMap="RoleEntityResultMap">
+    SELECT
+      id,
+      role_name,
+      role_code,
+      status
+    FROM sys_role
+    ORDER BY id DESC
+  </select>
+
+  <insert id="insertRole" parameterType="com.ruixiaomi.system.model.RoleEntity">
+    INSERT INTO sys_role (
+      role_name,
+      role_code,
+      status
+    ) VALUES (
+      #{roleName},
+      #{roleCode},
+      #{status}
+    )
+  </insert>
+
+</mapper>

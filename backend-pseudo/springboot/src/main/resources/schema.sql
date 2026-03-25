@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS sys_role (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  role_name VARCHAR(64) NOT NULL,
+  role_code VARCHAR(64) NOT NULL,
+  status TINYINT NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_sys_role_role_code (role_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO sys_role (role_name, role_code, status)
+SELECT '管理员', 'admin', 1
+WHERE NOT EXISTS (
+  SELECT 1 FROM sys_role WHERE role_code = 'admin'
+);

@@ -93,6 +93,16 @@
 - 说明:
   - 本迭代只做数据库与权限模型设计，不涉及接口与页面开发。
 
+### 2026-03-25 Iteration-004
+- 需求: 调整任务字段定义（客期变更任务新增4字段，已下单加急任务“任务提交人”改为“提问人”）。
+- 变更内容:
+  - `tm_task_customer_due_change` 新增字段：`task_no`（已存在保留）、`salesperson_name`、`latest_risk_level`、`is_closed_loop`
+  - `tm_task_expedited_order` 字段重命名：`submitter_name` -> `questioner_name`
+- 交付物:
+  - 初始化脚本同步更新：`backend-pseudo/springboot/sql/002_task_platform_init.sql`
+  - 增量脚本新增：`backend-pseudo/springboot/sql/003_alter_task_fields_20260325.sql`
+  - 设计文档同步更新：`docs/database-design-task-platform.md`
+
 ## 下一模块开发记录模板
 
 ### YYYY-MM-DD Iteration-XXX

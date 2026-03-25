@@ -152,7 +152,7 @@
 - `late_delivery_impact` TEXT
 - `product_coordinator` VARCHAR(64)
 - `regional_coordinator` VARCHAR(64)
-- `submitter_name` VARCHAR(64)
+- `questioner_name` VARCHAR(64)（原“任务提交人”字段，现统一为“提问人”）
 - `is_repeat_submit` TINYINT
 - `business_assistant` VARCHAR(64)
 - `order_no` VARCHAR(64)
@@ -240,6 +240,9 @@
 - `approval_no` VARCHAR(64)
 - `region_name` VARCHAR(64)
 - `contract_no` VARCHAR(64)
+- `salesperson_name` VARCHAR(64)（业务员姓名）
+- `latest_risk_level` VARCHAR(32)（最新风险等级）
+- `is_closed_loop` TINYINT（是否闭环）
 - `is_repeat_submit` TINYINT
 - `created_at` DATETIME
 - `agent_product_coordinator` VARCHAR(64)

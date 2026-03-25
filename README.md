@@ -1,5 +1,13 @@
-# Vue 3 + TypeScript + Vite
+# HZB
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+锐小蜜任务管理平台（前端 + Spring Boot 后端伪代码骨架）。
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## 前端
+
+- 技术栈：Vue 3 + TypeScript + Vite
+
+## 后端
+
+- 路径：backend-pseudo/springboot
+- 当前已打通：RBAC 角色查询/新增（MyBatis + MySQL 真实落库）
+- 迭代记录：docs/requirements-log.md

@@ -32,3 +32,25 @@
   - `main`: 稳定主线
   - `feature/*`: 功能开发
   - `backup/*`: 临时备份分支
+
+### 2026-03-25 Iteration-002
+- 需求: 完善代码版本管理，打通远程主线同步。
+- 改动范围:
+  - 远程仓库绑定完成：`origin=https://github.com/Huangzhongbin2026/HZB.git`
+  - 创建备份分支：`backup/20260325-rbac-mybatis`
+  - 创建里程碑标签：`milestone/20260325-01-rbac-mybatis`
+  - 本地 `main` 已合并远程 `origin/main` 历史并解决 README 冲突
+- 当前状态:
+  - 本地主线已完成收敛，具备下一模块开发条件
+  - 因网络连接 GitHub 443 失败，`main` 推送待重试
+
+## 下一模块开发记录模板
+
+### YYYY-MM-DD Iteration-XXX
+- 需求:
+- 影响模块:
+- 接口变更:
+- 数据库变更:
+- 代码改动文件:
+- 验证结果:
+- 回滚方案:

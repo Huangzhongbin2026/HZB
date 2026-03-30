@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruixiaomi.system.mapper.RbacMapper">
+
+  <select id="selectRoleList" resultType="SysRoleEntity">
+    SELECT id, role_name, role_code, status, NULL AS remark, create_time AS created_at, create_time AS updated_at
+    FROM sys_role
+    ORDER BY id ASC
+  </select>
+
+  <select id="selectRoleById" resultType="SysRoleEntity">
+    SELECT id, role_name, role_code, status, NULL AS remark, create_time AS created_at, create_time AS updated_at
+    FROM sys_role
+    WHERE id = #{id}
+    LIMIT 1
+  </select>
+
+  <select id="selectRoleByCode" resultType="SysRoleEntity">
+    SELECT id, role_name, role_code, status, NULL AS remark, create_time AS created_at, create_time AS updated_at
+    FROM sys_role
+    WHERE role_code = #{roleCode}
+    LIMIT 1
+  </select>
+
+  <select id="selectRoleByName" resultType="SysRoleEntity">
+    SELECT id, role_name, role_code, status, NULL AS remark, create_time AS created_at, create_time AS updated_at
+    FROM sys_role
+    WHERE role_name = #{roleName}
+    LIMIT 1
+  </select>
+
+  <insert id="insertRole" parameterType="SysRoleEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sys_role (role_name, role_code, status, create_time)
+    VALUES (#{roleName}, #{roleCode}, #{status}, CURRENT_TIMESTAMP)
+  </insert>
+
+  <update id="updateRole" parameterType="SysRoleEntity">
+    UPDATE sys_role
+    SET role_name = #{roleName},
+        status = #{status}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteRole">
+    DELETE FROM sys_role WHERE id = #{id}
+  </delete>
+
+  <select id="selectPermissionCodesByRoleId" resultType="string">
+    SELECT p.permission_code
+    FROM sys_role_permission rp
+      INNER JOIN sys_permission p ON rp.permission_id = p.id
+    WHERE rp.role_id = #{roleId}
+    ORDER BY p.permission_code ASC
+  </select>
+
+  <delete id="deleteRolePermissions">
+    DELETE FROM sys_role_permission WHERE role_id = #{roleId}
+  </delete>
+
+  <insert id="insertRolePermission">
+    INSERT INTO sys_role_permission (role_id, permission_id)
+    VALUES (#{roleId}, #{permissionId})
+  </insert>
+
+  <insert id="insertPermissionIfAbsent">
+    INSERT INTO sys_permission (
+      permission_name,
+      permission_code,
+      resource_type,
+      module_code,
+      page_code,
+      button_code,
+      field_code,
+      status
+    )
+    SELECT #{permissionName}, #{permissionCode}, #{resourceType}, #{moduleCode}, #{pageCode}, #{buttonCode}, #{fieldCode}, 1
+    WHERE NOT EXISTS (
+      SELECT 1 FROM sys_permission WHERE permission_code = #{permissionCode}
+    )
+  </insert>
+
+  <select id="selectPermissionIdByCode" resultType="long">
+    SELECT id FROM sys_permission WHERE permission_code = #{permissionCode} LIMIT 1
+  </select>
+
+  <select id="selectRowRulesByRoleId" resultType="SysRoleRowRuleEntity">
+    SELECT *
+    FROM sys_role_row_rule
+    WHERE role_id = #{roleId}
+    ORDER BY id ASC
+  </select>
+
+  <delete id="deleteRowRules">
+    DELETE FROM sys_role_row_rule
+    WHERE role_id = #{roleId}
+    <if test="pageCode != null">
+      AND page_code = #{pageCode}
+    </if>
+  </delete>
+
+  <insert id="insertRowRule">
+    INSERT INTO sys_role_row_rule (role_id, page_code, match_field)
+    VALUES (#{roleId}, #{pageCode}, #{matchField})
+  </insert>
+
+  <select id="selectUserList" resultType="SysUserEntity">
+    SELECT
+      id,
+      username,
+      password_hash,
+      COALESCE(nickname, user_name, account, username) AS display_name,
+      feishu_id,
+      'PLATFORM' AS user_type,
+      COALESCE(mobile, phone) AS mobile,
+      email,
+      status,
+      NULL AS remark,
+      create_time AS created_at,
+      update_time AS updated_at
+    FROM sys_user
+    WHERE is_deleted = 0
+    ORDER BY id ASC
+  </select>
+
+  <select id="selectInternalUserList" resultType="SysUserEntity">
+    SELECT
+      id,
+      username,
+      password_hash,
+      COALESCE(nickname, user_name, account, username) AS display_name,
+      feishu_id,
+      'PLATFORM' AS user_type,
+      COALESCE(mobile, phone) AS mobile,
+      email,
+      status,
+      NULL AS remark,
+      create_time AS created_at,
+      update_time AS updated_at
+    FROM sys_user
+    WHERE is_deleted = 0
+    ORDER BY id ASC
+  </select>
+
+  <select id="selectUserById" resultType="SysUserEntity">
+    SELECT
+      id,
+      username,
+      password_hash,
+      COALESCE(nickname, user_name, account, username) AS display_name,
+      feishu_id,
+      'PLATFORM' AS user_type,
+      COALESCE(mobile, phone) AS mobile,
+      email,
+      status,
+      NULL AS remark,
+      create_time AS created_at,
+      update_time AS updated_at
+    FROM sys_user
+    WHERE id = #{id}
+    LIMIT 1
+  </select>
+
+  <select id="selectUserByUsername" resultType="SysUserEntity">
+    SELECT
+      id,
+      username,
+      password_hash,
+      COALESCE(nickname, user_name, account, username) AS display_name,
+      feishu_id,
+      'PLATFORM' AS user_type,
+      COALESCE(mobile, phone) AS mobile,
+      email,
+      status,
+      NULL AS remark,
+      create_time AS created_at,
+      update_time AS updated_at
+    FROM sys_user
+    WHERE is_deleted = 0 AND username = #{username}
+    LIMIT 1
+  </select>
+
+  <select id="selectUserByDisplayName" resultType="SysUserEntity">
+    SELECT
+      id,
+      username,
+      password_hash,
+      COALESCE(nickname, user_name, account, username) AS display_name,
+      feishu_id,
+      'PLATFORM' AS user_type,
+      COALESCE(mobile, phone) AS mobile,
+      email,
+      status,
+      NULL AS remark,
+      create_time AS created_at,
+      update_time AS updated_at
+    FROM sys_user
+    WHERE is_deleted = 0
+      AND (
+        TRIM(COALESCE(nickname, '')) = #{displayName}
+        OR TRIM(COALESCE(user_name, '')) = #{displayName}
+        OR TRIM(COALESCE(display_name, '')) = #{displayName}
+      )
+    ORDER BY id ASC
+    LIMIT 1
+  </select>
+
+  <select id="selectUserByFeishuId" resultType="SysUserEntity">
+    SELECT
+      id,
+      username,
+      password_hash,
+      COALESCE(nickname, user_name, account, username) AS display_name,
+      feishu_id,
+      'PLATFORM' AS user_type,
+      COALESCE(mobile, phone) AS mobile,
+      email,
+      status,
+      NULL AS remark,
+      create_time AS created_at,
+      update_time AS updated_at
+    FROM sys_user
+    WHERE is_deleted = 0 AND feishu_id = #{feishuId}
+    LIMIT 1
+  </select>
+
+  <insert id="insertUser" parameterType="SysUserEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sys_user (
+      username,
+      password,
+      password_hash,
+      display_name,
+      nickname,
+      phone,
+      email,
+      status,
+      user_name,
+      account,
+      mobile,
+      feishu_id,
+      user_type,
+      password_salt,
+      is_deleted,
+      created_at,
+      updated_at,
+      create_time,
+      update_time
+    ) VALUES (
+      #{username},
+      #{passwordHash},
+      #{passwordHash},
+      #{displayName},
+      #{displayName},
+      #{mobile},
+      #{email},
+      #{status},
+      #{displayName},
+      #{username},
+      #{mobile},
+      #{feishuId},
+      'PLATFORM',
+      '',
+      0,
+      CURRENT_TIMESTAMP,
+      CURRENT_TIMESTAMP,
+      CURRENT_TIMESTAMP,
+      CURRENT_TIMESTAMP
+    )
+  </insert>
+
+  <select id="selectOperationLogsLegacy" resultType="SysOperationLogEntity">
+    SELECT
+      l.id,
+      l.user_id,
+      l.module_code,
+      l.operation_type,
+      l.target_type,
+      l.target_id,
+      l.request_path,
+      l.request_method,
+      l.request_body,
+      l.response_body,
+      CASE
+        WHEN UPPER(CAST(l.operation_result AS CHAR)) IN ('1', 'SUCCESS', 'TRUE', 'Y') THEN 1
+        ELSE 0
+      END AS operation_result,
+      l.error_message,
+      l.created_at
+    FROM sys_operation_log l
+    ORDER BY l.id DESC
+  </select>
+
+  <select id="selectLoginLogsLegacy" resultType="SysLoginLogEntity">
+    SELECT
+      id,
+      user_id,
+      username_snapshot,
+      ip,
+      user_agent,
+      CASE
+        WHEN UPPER(CAST(login_result AS CHAR)) IN ('1', 'SUCCESS', 'TRUE', 'Y') THEN 1
+        ELSE 0
+      END AS login_result,
+      failure_reason,
+      login_at
+    FROM sys_login_log
+    ORDER BY id DESC
+  </select>
+
+  <insert id="insertOperationLogLegacy" parameterType="SysOperationLogEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sys_operation_log (
+      user_id,
+      module_code,
+      operation_type,
+      target_type,
+      target_id,
+      request_path,
+      request_method,
+      request_body,
+      response_body,
+      operation_result,
+      error_message,
+      created_at
+    ) VALUES (
+      #{userId},
+      #{moduleCode},
+      #{operationType},
+      #{targetType},
+      #{targetId},
+      #{requestPath},
+      #{requestMethod},
+      #{requestBody},
+      #{responseBody},
+      #{operationResult},
+      #{errorMessage},
+      CURRENT_TIMESTAMP
+    )
+  </insert>
+
+  <update id="updateUser" parameterType="SysUserEntity">
+    UPDATE sys_user
+    SET username = #{username},
+        nickname = #{displayName},
+        phone = #{mobile},
+        user_name = #{displayName},
+        account = #{username},
+        feishu_id = #{feishuId},
+        mobile = #{mobile},
+        email = #{email},
+        status = #{status},
+        update_time = CURRENT_TIMESTAMP
+        <if test="passwordHash != null and passwordHash != ''">
+          , password = #{passwordHash}
+          , password_hash = #{passwordHash}
+        </if>
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteUser">
+    UPDATE sys_user SET is_deleted = 1, update_time = CURRENT_TIMESTAMP WHERE id = #{id}
+  </delete>
+
+  <delete id="deleteUserRoles">
+    DELETE FROM sys_user_role WHERE user_id = #{userId}
+  </delete>
+
+  <insert id="insertUserRole">
+    INSERT INTO sys_user_role (user_id, role_id)
+    VALUES (#{userId}, #{roleId})
+  </insert>
+
+  <select id="selectRoleCodesByUserId" resultType="string">
+    SELECT r.role_code
+    FROM sys_user_role ur
+      INNER JOIN sys_role r ON ur.role_id = r.id
+    WHERE ur.user_id = #{userId}
+    ORDER BY ur.id ASC
+  </select>
+
+  <select id="selectFieldPoliciesByRoleId" resultType="SysRoleFieldPolicyEntity">
+    SELECT *
+    FROM sys_role_field_policy
+    WHERE role_id = #{roleId}
+    ORDER BY id ASC
+  </select>
+
+  <delete id="deleteFieldPolicies">
+    DELETE FROM sys_role_field_policy WHERE role_id = #{roleId}
+  </delete>
+
+  <insert id="insertFieldPolicy">
+    INSERT INTO sys_role_field_policy (role_id, module_code, page_code, field_code, policy_mode)
+    VALUES (#{roleId}, #{moduleCode}, #{pageCode}, #{fieldCode}, #{policyMode})
+  </insert>
+
+  <select id="selectOperationLogs" resultType="SysOperationLogEntity">
+    SELECT
+      l.id,
+      NULL AS user_id,
+      l.oper_module AS module_code,
+      l.oper_type AS operation_type,
+      NULL AS target_type,
+      NULL AS target_id,
+      l.request_uri AS request_path,
+      l.request_method,
+      l.oper_user AS request_body,
+      l.oper_content AS response_body,
+      CASE
+        WHEN UPPER(CAST(l.oper_result AS CHAR)) IN ('1', 'SUCCESS', 'TRUE', 'Y') THEN 1
+        ELSE 0
+      END AS operation_result,
+      l.remark AS error_message,
+      l.created_at
+    FROM sys_operation_log l
+    WHERE COALESCE(l.is_deleted, 0) = 0
+    ORDER BY l.id DESC
+  </select>
+
+  <select id="selectLoginLogs" resultType="SysLoginLogEntity">
+    SELECT
+      id,
+      NULL AS user_id,
+      login_account AS username_snapshot,
+      login_ip AS ip,
+      user_agent,
+      CASE
+        WHEN UPPER(CAST(login_result AS CHAR)) IN ('1', 'SUCCESS', 'TRUE', 'Y') THEN 1
+        ELSE 0
+      END AS login_result,
+      fail_reason AS failure_reason,
+      login_time AS login_at
+    FROM sys_login_log
+    WHERE COALESCE(is_deleted, 0) = 0
+    ORDER BY id DESC
+  </select>
+
+  <insert id="insertOperationLog" parameterType="SysOperationLogEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sys_operation_log (
+      user_id,
+      module_code,
+      operation_type,
+      target_type,
+      target_id,
+      request_path,
+      request_method,
+      request_body,
+      response_body,
+      operation_result,
+      error_message,
+      oper_user,
+      oper_time,
+      oper_ip,
+      oper_type,
+      oper_module,
+      oper_content,
+      oper_result,
+      request_uri,
+      trace_id,
+      remark,
+      created_at,
+      updated_at,
+      is_deleted
+    ) VALUES (
+      #{userId},
+      #{moduleCode},
+      #{operationType},
+      #{targetType},
+      #{targetId},
+      #{requestPath},
+      #{requestMethod},
+      #{requestBody},
+      #{responseBody},
+      #{operationResult},
+      #{errorMessage},
+      #{userId},
+      CURRENT_TIMESTAMP,
+      '127.0.0.1',
+      #{operationType},
+      #{moduleCode},
+      #{requestBody},
+      #{operationResult},
+      #{requestPath},
+      'system-trace',
+      #{responseBody},
+      CURRENT_TIMESTAMP,
+      CURRENT_TIMESTAMP,
+      0
+    )
+  </insert>
+
+  <select id="selectDictTypes" resultType="SysDictTypeEntity">
+    SELECT id, dict_name, dict_code, is_enabled AS status, remark, created_at, updated_at
+    FROM sys_dict_type
+    WHERE COALESCE(is_deleted, 0) = 0
+    ORDER BY sort_no ASC, id ASC
+  </select>
+
+  <insert id="insertDictType" parameterType="SysDictTypeEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sys_dict_type (dict_name, dict_code, sort_no, is_enabled, remark, created_at, updated_at, is_deleted)
+    VALUES (#{dictName}, #{dictCode}, 0, #{status}, #{remark}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
+  </insert>
+
+  <update id="updateDictType" parameterType="SysDictTypeEntity">
+    UPDATE sys_dict_type
+    SET dict_name = #{dictName},
+        dict_code = #{dictCode},
+        is_enabled = #{status},
+        remark = #{remark},
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteDictType">
+    UPDATE sys_dict_type SET is_deleted = 1, updated_at = CURRENT_TIMESTAMP WHERE id = #{id}
+  </delete>
+
+  <select id="selectDictItems" resultType="SysDictItemEntity">
+    SELECT i.id, i.dict_type_id, t.dict_code, i.item_name AS item_label, i.item_value, i.sort_no, i.is_enabled AS status,
+           i.remark, i.created_at, i.updated_at
+    FROM sys_dict_item i
+      INNER JOIN sys_dict_type t ON i.dict_type_id = t.id
+    WHERE COALESCE(i.is_deleted, 0) = 0
+    ORDER BY i.id ASC
+  </select>
+
+  <insert id="insertDictItem" parameterType="SysDictItemEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sys_dict_item (dict_type_id, item_name, item_code, item_value, sort_no, is_enabled, remark, created_at, updated_at, is_deleted)
+    VALUES (#{dictTypeId}, #{itemLabel}, #{itemValue}, #{itemValue}, #{sortNo}, #{status}, #{remark}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0)
+  </insert>
+
+  <update id="updateDictItem" parameterType="SysDictItemEntity">
+    UPDATE sys_dict_item
+    SET dict_type_id = #{dictTypeId},
+        item_name = #{itemLabel},
+        item_code = #{itemValue},
+        item_value = #{itemValue},
+        sort_no = #{sortNo},
+        is_enabled = #{status},
+        remark = #{remark},
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteDictItem">
+    UPDATE sys_dict_item SET is_deleted = 1, updated_at = CURRENT_TIMESTAMP WHERE id = #{id}
+  </delete>
+</mapper>

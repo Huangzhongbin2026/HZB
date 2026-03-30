@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruixiaomi.system.mapper.ManualConsultMapper">
+
+  <insert id="insertSession" parameterType="ManualConsultSessionEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO tm_manual_consult_session (
+      session_no, source_type, business_type, business_key, task_type, task_id, title,
+      questioner_user_id, questioner_name, questioner_feishu_id,
+      service_user_id, service_display_name, service_alias, service_group,
+      transferred_from_user_id, transferred_from_name, transferred_at, matched_by,
+      status, closed_by_type, closed_by_name, closed_at, satisfaction_score, satisfaction_comment,
+      unread_for_service, unread_for_questioner, last_message_preview, last_message_at
+    ) VALUES (
+      #{sessionNo}, #{sourceType}, #{businessType}, #{businessKey}, #{taskType}, #{taskId}, #{title},
+      #{questionerUserId}, #{questionerName}, #{questionerFeishuId},
+      #{serviceUserId}, #{serviceDisplayName}, #{serviceAlias}, #{serviceGroup},
+      #{transferredFromUserId}, #{transferredFromName}, #{transferredAt}, #{matchedBy},
+      #{status}, #{closedByType}, #{closedByName}, #{closedAt}, #{satisfactionScore}, #{satisfactionComment},
+      #{unreadForService}, #{unreadForQuestioner}, #{lastMessagePreview}, #{lastMessageAt}
+    )
+  </insert>
+
+  <update id="updateSessionRouting" parameterType="ManualConsultSessionEntity">
+    UPDATE tm_manual_consult_session
+    SET service_user_id = #{serviceUserId},
+        service_display_name = #{serviceDisplayName},
+        service_alias = #{serviceAlias},
+        service_group = #{serviceGroup},
+        transferred_from_user_id = NULL,
+        transferred_from_name = NULL,
+        transferred_at = NULL,
+        matched_by = #{matchedBy},
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = #{id}
+  </update>
+
+  <update id="transferSession">
+    UPDATE tm_manual_consult_session
+    SET service_user_id = #{serviceUserId},
+        service_display_name = #{serviceDisplayName},
+        service_alias = #{serviceAlias},
+        service_group = #{serviceGroup},
+        transferred_from_user_id = #{transferredFromUserId},
+        transferred_from_name = #{transferredFromName},
+        transferred_at = CURRENT_TIMESTAMP,
+        matched_by = #{matchedBy},
+        status = 'OPEN',
+        closed_by_type = NULL,
+        closed_by_name = NULL,
+        closed_at = NULL,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = #{sessionId}
+  </update>
+
+  <update id="closeSession">
+    UPDATE tm_manual_consult_session
+    SET status = 'CLOSED',
+        closed_by_type = #{closedByType},
+        closed_by_name = #{closedByName},
+        closed_at = CURRENT_TIMESTAMP,
+        satisfaction_score = #{satisfactionScore},
+        satisfaction_comment = #{satisfactionComment},
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = #{sessionId}
+  </update>
+
+  <update id="touchSessionAfterMessage">
+    UPDATE tm_manual_consult_session
+    SET last_message_preview = #{preview},
+        last_message_at = CURRENT_TIMESTAMP,
+        updated_at = CURRENT_TIMESTAMP,
+        <choose>
+          <when test="targetUnreadField == 'SERVICE'">
+            unread_for_service = unread_for_service + 1
+          </when>
+          <otherwise>
+            unread_for_questioner = unread_for_questioner + 1
+          </otherwise>
+        </choose>
+    WHERE id = #{sessionId}
+  </update>
+
+  <select id="selectSessionById" resultType="ManualConsultSessionEntity">
+    SELECT * FROM tm_manual_consult_session WHERE id = #{id} LIMIT 1
+  </select>
+
+  <select id="selectPortalSessions" resultType="ManualConsultSessionEntity">
+    SELECT *
+    FROM tm_manual_consult_session
+    WHERE questioner_feishu_id = #{questionerFeishuId}
+    ORDER BY COALESCE(last_message_at, created_at) DESC, id DESC
+  </select>
+
+  <select id="selectAdminSessions" resultType="ManualConsultSessionEntity">
+    SELECT *
+    FROM tm_manual_consult_session
+    WHERE (
+      #{includeAll} = TRUE OR service_user_id = #{currentUserId}
+      OR EXISTS (
+        SELECT 1
+        FROM tm_manual_consult_participant participant
+        WHERE participant.session_id = tm_manual_consult_session.id
+          AND participant.participant_type = 'SERVICE'
+          AND participant.participant_key = CONCAT('', #{currentUserId})
+      )
+    )
+      AND (#{status} IS NULL OR #{status} = '' OR status = #{status})
+      AND (
+        #{keyword} IS NULL OR #{keyword} = ''
+        OR session_no LIKE CONCAT('%', #{keyword}, '%')
+        OR title LIKE CONCAT('%', #{keyword}, '%')
+        OR business_key LIKE CONCAT('%', #{keyword}, '%')
+        OR questioner_name LIKE CONCAT('%', #{keyword}, '%')
+        OR service_display_name LIKE CONCAT('%', #{keyword}, '%')
+        OR service_alias LIKE CONCAT('%', #{keyword}, '%')
+      )
+    ORDER BY COALESCE(last_message_at, created_at) DESC, id DESC
+  </select>
+
+    <select id="selectWorkbenchSessionsByUserName" resultType="ManualConsultSessionEntity">
+      SELECT *
+      FROM tm_manual_consult_session session
+      WHERE (
+        session.questioner_name = #{currentUserName}
+        OR session.service_display_name = #{currentUserName}
+        OR session.service_alias = #{currentUserName}
+        OR session.transferred_from_name = #{currentUserName}
+        OR EXISTS (
+          SELECT 1
+          FROM tm_manual_consult_participant participant
+          WHERE participant.session_id = session.id
+            AND participant.participant_name = #{currentUserName}
+        )
+      )
+      ORDER BY COALESCE(session.last_message_at, session.created_at) DESC, session.id DESC
+    </select>
+
+  <select id="selectParticipantKeysByType" resultType="java.lang.String">
+    SELECT participant_key
+    FROM tm_manual_consult_participant
+    WHERE session_id = #{sessionId}
+      AND participant_type = #{participantType}
+    ORDER BY id ASC
+  </select>
+
+  <update id="clearPortalUnread">
+    UPDATE tm_manual_consult_session SET unread_for_questioner = 0, updated_at = CURRENT_TIMESTAMP WHERE id = #{sessionId}
+  </update>
+
+  <update id="clearServiceUnread">
+    UPDATE tm_manual_consult_session SET unread_for_service = 0, updated_at = CURRENT_TIMESTAMP WHERE id = #{sessionId}
+  </update>
+
+  <insert id="insertParticipant">
+    INSERT INTO tm_manual_consult_participant(session_id, participant_type, participant_key, participant_name)
+    SELECT #{sessionId}, #{participantType}, #{participantKey}, #{participantName}
+    WHERE NOT EXISTS (
+      SELECT 1 FROM tm_manual_consult_participant
+      WHERE session_id = #{sessionId} AND participant_type = #{participantType} AND participant_key = #{participantKey}
+    )
+  </insert>
+
+  <insert id="insertMessage" parameterType="ManualConsultMessageEntity" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO tm_manual_consult_message(session_id, sender_type, sender_key, sender_name, content_type, message_content)
+    VALUES (#{sessionId}, #{senderType}, #{senderKey}, #{senderName}, #{contentType}, #{messageContent})
+  </insert>
+
+  <select id="selectMessagesBySessionId" resultType="ManualConsultMessageEntity">
+    SELECT * FROM tm_manual_consult_message WHERE session_id = #{sessionId} ORDER BY id ASC
+  </select>
+</mapper>

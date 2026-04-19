@@ -1,0 +1,57 @@
+{
+  "pages": [
+    {
+      "path": "src/pages/index/index",
+      "style": {
+        "navigationBarTitleText": "个人知识库"
+      }
+    },
+    {
+      "path": "src/pages/notes/index",
+      "style": {
+        "navigationBarTitleText": "笔记"
+      }
+    },
+    {
+      "path": "src/pages/graph/index",
+      "style": {
+        "navigationBarTitleText": "知识图谱"
+      }
+    },
+    {
+      "path": "src/pages/ai/index",
+      "style": {
+        "navigationBarTitleText": "创作"
+      }
+    },
+    {
+      "path": "src/pages/whiteboard/index",
+      "style": {
+        "navigationBarTitleText": "白板"
+      }
+    },
+    {
+      "path": "src/pages/daily/index",
+      "style": {
+        "navigationBarTitleText": "日记"
+      }
+    },
+    {
+      "path": "src/pages/templates/index",
+      "style": {
+        "navigationBarTitleText": "模板"
+      }
+    },
+    {
+      "path": "src/pages/settings/index",
+      "style": {
+        "navigationBarTitleText": "系统设置"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#f6f1e8",
+    "backgroundColor": "#f6f1e8"
+  }
+}

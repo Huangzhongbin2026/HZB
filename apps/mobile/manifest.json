@@ -1,0 +1,14 @@
+{
+  "name": "个人双向知识库移动端",
+  "appid": "__UNI__KNOWLEDGE_CLOUD__",
+  "description": "个人双向知识库移动端壳，覆盖首页、笔记、图谱、AI、白板、日记、模板和设置页面。",
+  "versionName": "0.1.0",
+  "versionCode": 1,
+  "transformPx": false,
+  "app-plus": {
+    "usingComponents": true
+  },
+  "h5": {
+    "title": "个人双向知识库移动端"
+  }
+}

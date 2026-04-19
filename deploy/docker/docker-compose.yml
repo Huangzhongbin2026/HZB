@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: ../../apps/api
+      dockerfile: Dockerfile
+    env_file:
+      - ./api.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - knowledge_storage:/app/storage
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ../../apps/web
+      dockerfile: Dockerfile
+    env_file:
+      - ./web.env
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  knowledge_storage:
+

@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: knowledge-cloud-api
+Version: 0.1.0
+Summary: Private cloud knowledge base API
+Requires-Python: >=3.11
+Requires-Dist: fastapi>=0.116.0
+Requires-Dist: uvicorn[standard]>=0.35.0
+Requires-Dist: sqlmodel>=0.0.24
+Requires-Dist: pydantic-settings>=2.10.1
+Requires-Dist: PyJWT>=2.9.0
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: readability-lxml>=0.8.1
+Requires-Dist: markdownify>=0.14.1
+Requires-Dist: beautifulsoup4>=4.12.3
+Provides-Extra: dev
+Requires-Dist: pytest>=8.3.5; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.26.0; extra == "dev"

@@ -1,0 +1,27 @@
+{
+  "name": "@knowledge-cloud/mobile",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:h5": "vite",
+    "build:h5": "vite build",
+    "preview:h5": "vite preview"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "^2.0.2-5000720260410001",
+    "vue": "^3.1.5"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.4.30",
+    "@dcloudio/uni-cli-i18n": "^2.0.2-5000720260410001",
+    "@dcloudio/uni-cli-shared": "^2.0.2-5000720260410001",
+    "@dcloudio/vite-plugin-uni": "^3.0.0-alpha-3000020210521001",
+    "@vitejs/plugin-vue": "^1.10.2",
+    "@vue/compiler-sfc": "^3.1.5",
+    "@vue/server-renderer": "^3.1.5",
+    "semver": "^7.7.4",
+    "typescript": "^5.8.3",
+    "vite": "^2.9.18",
+    "webpack": "^5.106.2"
+  }
+}

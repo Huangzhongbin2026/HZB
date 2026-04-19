@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Knowledge Cloud Desktop",
+  "version": "0.1.0",
+  "identifier": "com.private.knowledgecloud",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Knowledge Cloud Desktop",
+        "width": 1480,
+        "height": 900,
+        "minWidth": 1200,
+        "minHeight": 760
+      }
+    ]
+  }
+}
